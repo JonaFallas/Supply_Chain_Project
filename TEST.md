@@ -7,5 +7,6 @@ FROM
 	supply_chain_data
 
 ~~~
-Total_Revenue
-577604.81874
+
+| **Total_Revenue**   |
+| 577604.81874 |

@@ -144,19 +144,5 @@ Revenue_Percentage
 
   
 
-| **Location** |  **Revenue **  | **Percentage** | 
-
-|----------------|-------------------|------| 
-
-|Delhi            |   81027.7       |14   | 
-
-|Bangalore   | 102601.72    |17.7  | 
-
-|Chennai       | 119142.81    | 20.6| 
-
-|Kolkata         | 137077.55   |23.7 | 
-
-|Mumbai       |137755.02    | 23.8| 
- 
 
  

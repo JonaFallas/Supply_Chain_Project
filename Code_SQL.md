@@ -47,42 +47,24 @@ GROUP BY
 -- Revenue grouped by location 
 
 With CTE_revenue_location  
-
-AS ( 
-
-SELECT  
-
-Location, 
-
-ROUND(SUM(Revenue_generated),2,1) as Revenue 
-
-FROM  
-
-supply_chain_data 
-
+AS (
+SELECT
+	Location, 
+	ROUND(SUM(Revenue_generated),2,1) as Revenue 
+FROM
+	supply_chain_data 
 GROUP BY 
-
-Location 
-
+	Location 
 ) 
 
-  
-
 Select 
-
-Location, 
-
-Revenue, 
-
-ROUND(Revenue / SUM(Revenue) OVER (),3,1) * 100 AS Revenue_Percentage 
-
+	Location, 
+	Revenue, 
+	ROUND(Revenue / SUM(Revenue) OVER (),3,1) * 100 AS Revenue_Percentage 
 FROM 
-
-CTE_revenue_location  
-
+	CTE_revenue_location  
 ORDER BY  
-
-Revenue_Percentage 
+	Revenue_Percentage 
 
 
 ~~~  

@@ -157,3 +157,59 @@ GROUP BY
 
 
 
+
+~~~ SQL
+
+--Profit Magin
+
+WITH Profit_Revenue_CTE AS(
+SELECT 
+	ROUND(SUM(Revenue_generated),2) AS Total_Revenue,
+	ROUND(SUM((Revenue_generated-(Shipping_costs+Manufacturing_costs+Costs))),2) AS Net_Profit
+FROM 
+	supply_chain_data
+)
+SELECT 
+    ROUND((Net_Profit / Total_Revenue) * 100,2) AS Profit_Margin
+FROM 
+	Profit_Revenue_CTE
+
+
+~~~
+
+
+| **Profit_Margin ** |
+|--------------------|
+|    89.92           |
+
+
+
+
+
+
+~~~ SQL
+
+-- Coorrelation between Revenue generated and profit for each product
+
+WITH Profit_Revenue_CTE AS(
+SELECT 
+	SKU,
+	ROUND(SUM(Revenue_generated),2) AS Revenue,
+	ROUND(SUM((Revenue_generated-(Shipping_costs+Manufacturing_costs+Costs))),2) AS Profit
+FROM 
+	supply_chain_data
+Group By 
+	SKU)
+
+--Calculating  the Pearson Correlation Coefficient
+SELECT 
+	SKU,
+    (AVG(Revenue * Profit) - AVG(Revenue) * AVG(Profit)) / 
+    (STDEVP(Revenue) * STDEVP(Profit)) AS Correlation_Coefficient
+FROM 
+    Profit_Revenue_CTE
+Group by 
+	SKU;
+ 
+
+

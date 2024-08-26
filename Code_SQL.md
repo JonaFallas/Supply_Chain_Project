@@ -187,6 +187,7 @@ FROM
 
 
 
+
 ~~~ SQL
 
 -- Coorrelation between Revenue generated and profit for each product
@@ -198,18 +199,55 @@ SELECT
 	ROUND(SUM((Revenue_generated-(Shipping_costs+Manufacturing_costs+Costs))),2) AS Profit
 FROM 
 	supply_chain_data
-Group By 
+GROUP BY 
 	SKU)
 
 --Calculating  the Pearson Correlation Coefficient
 SELECT 
-	SKU,
     (AVG(Revenue * Profit) - AVG(Revenue) * AVG(Profit)) / 
     (STDEVP(Revenue) * STDEVP(Profit)) AS Correlation_Coefficient
 FROM 
     Profit_Revenue_CTE
-Group by 
-	SKU;
- 
+
+
+
+---
+
+
+
+~~~SQL
+
+
+
+-- Cost Analysis 
+
+--- Top 10 products with highest manufactuiring costs
+
+SELECT
+	TOP 10
+	SKU,
+	Manufacturing_costs
+FROM 
+	supply_chain_data
+ORDER BY 
+	Manufacturing_costs DESC
+
+~~~
+
+
+| **Product_type** | **SKU** | **Manufacturing_costs** |
+|------------------|---------|-------------------------|
+|       cosmetics  |SKU7     |	   99.4661086          |
+|       cosmetics  |SKU23    |	   98.60995724         |
+|       skincare   |SKU13    |	   97.82905011         |
+|       haircare   |SKU83    |	   97.7305938          |
+|       skincare   |SKU15    |	   97.12128175         |
+|       haircare   |SKU68    |	   97.11358156         |
+|       skincare   |SKU10    |	   96.52735279         |
+|       skincare   |SKU42    | 	   96.42282064         |
+|       skincare   |SKU41    |	   95.33206455         |
+|       skincare   |SKU4     |	   92.0651606          |
+
+
 
 

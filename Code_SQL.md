@@ -1,10 +1,14 @@
 ~~~ SQL
+
+--Insights 
+
+
 -- Total Revenue
 
 SELECT 
 	SUM(Revenue_generated) as Total_Revenue
 FROM 
-	supply_chain_data
+	supply_chain_data;
 
 ~~~
 
@@ -12,11 +16,10 @@ FROM
 |--------------|
 | 577604.81874 |
 
-
-
-
-
 ~~~ SQL
+
+
+
 -- Revenue By Product Type 
 
 SELECT 
@@ -25,7 +28,7 @@ SELECT
 FROM 
 	supply_chain_data
 GROUP BY
-	Product_Type
+	Product_Type;
 
 
 ~~~
@@ -36,27 +39,27 @@ GROUP BY
 | haircare	|         174455.39 |
 | skincare	|         241628.16 |
 
-
-
-
-
-
-
 ~~~ SQL 
+
+
 
 -- Revenue grouped by location 
 
 With CTE_revenue_location  
-AS (
-SELECT
+
+AS ( 
+
+SELECT  
 	Location, 
 	ROUND(SUM(Revenue_generated),2,1) as Revenue 
-FROM
+FROM  
 	supply_chain_data 
+
 GROUP BY 
 	Location 
 ) 
 
+  
 Select 
 	Location, 
 	Revenue, 
@@ -64,8 +67,7 @@ Select
 FROM 
 	CTE_revenue_location  
 ORDER BY  
-	Revenue_Percentage 
-
+	Revenue_Percentage; 
 
 ~~~  
 
@@ -78,10 +80,9 @@ ORDER BY
 |Mumbai	         |  137755.02   |     23.8       |
 
 
-
-
-
 ~~~ SQL 
+
+
 
 
 --Profit by Location
@@ -91,7 +92,7 @@ SELECT
 FROM
 	supply_chain_data
 GROUP BY 
-	Location
+	Location;
 
 ~~~
 
@@ -103,10 +104,10 @@ GROUP BY
 |Kolkata	 |123605.19    |
 |Mumbai	         |127385.94    |
 
-
-
-
 ~~~ SQL
+
+
+
 
 
 --Total Profit
@@ -114,9 +115,7 @@ GROUP BY
 SELECT
 	ROUND(SUM((Revenue_generated-(Shipping_costs+Manufacturing_costs+Costs))),2) AS Total_Profit
 FROM
-	supply_chain_data
-
-
+	supply_chain_data;
 
 ~~~
 
@@ -125,13 +124,11 @@ FROM
 |    519398.76     |
 
 
-
-
-
-
-
-
 ~~~SQL
+
+
+
+
 
 --Profit by Product Type
 
@@ -141,12 +138,9 @@ SELECT
 FROM
 	supply_chain_data
 GROUP BY 
-	Product_type
-
+	Product_type;
 
 ~~~
-
-
 
 | **Product_type** |   **Profit** |
 |------------------|--------------|
@@ -154,11 +148,10 @@ GROUP BY
 |haircare	   |   155278.09  |
 |skincare	   |   217242.73  |
 
-
-
-
-
 ~~~ SQL
+
+
+
 
 --Profit Magin
 
@@ -172,23 +165,19 @@ FROM
 SELECT 
     ROUND((Net_Profit / Total_Revenue) * 100,2) AS Profit_Margin
 FROM 
-	Profit_Revenue_CTE
-
-
+	Profit_Revenue_CTE;
 ~~~
 
 
-| **Profit_Margin ** |
+| **Profit_Margin**  |
 |--------------------|
 |    89.92           |
 
 
-
-
-
-
-
 ~~~ SQL
+
+
+
 
 -- Coorrelation between Revenue generated and profit for each product
 
@@ -207,15 +196,13 @@ SELECT
     (AVG(Revenue * Profit) - AVG(Revenue) * AVG(Profit)) / 
     (STDEVP(Revenue) * STDEVP(Profit)) AS Correlation_Coefficient
 FROM 
-    Profit_Revenue_CTE
+    Profit_Revenue_CTE;
 
-
-
----
 
 
 
 ~~~SQL
+
 
 
 -- Cost Analysis 
@@ -229,7 +216,7 @@ SELECT
 FROM 
 	supply_chain_data
 ORDER BY 
-	Manufacturing_costs DESC
+	Manufacturing_costs DESC;
 
 ~~~
 
@@ -247,13 +234,10 @@ ORDER BY
 |       skincare   |SKU41    |	   95.33206455         |
 |       skincare   |SKU4     |	   92.0651606          |
 
-
-
-
-
-
-
 ~~~ SQL
+
+
+
 
 -- Inspection results and avg defect rates.
 
@@ -264,9 +248,7 @@ SELECT
 FROM 
 	supply_chain_data
 GROUP BY 
-	Inspection_results
-
-
+	Inspection_results;
 
 ~~~
 
@@ -277,13 +259,9 @@ GROUP BY
 |Pass	                 |       23	  |  2,03904318604348        |
 |Pending	         |       41	  |  2,15421777492683        |
 
-
-
-
-
-
-
 ~~~ SQL
+
+
 
 
 
@@ -304,10 +282,7 @@ WHERE
 	WHERE 
 	Inspection_results LIKE 'Fail')
 ORDER BY 
-	Defect_rates DESC
-
-
-
+	Defect_rates DESC;
 
 
 ~~~
@@ -335,3 +310,82 @@ ORDER BY
 |SKU80	   |    Supplier 3	|          Fail	         | 2,849662199      |
 |SKU5	   |    Supplier 4	|          Fail          | 2,779193512      |
 |SKU22	   |    Supplier 4	|          Fail 	 | 2,591275473      |
+
+~~~ SQL
+
+
+
+
+-- Inspections results grouped by Supplier
+
+WITH Products_by_Supplier AS (
+    SELECT 
+        Supplier_name,
+        COUNT(SKU) AS NumOfProds
+    FROM 
+        supply_chain_data 
+    GROUP BY
+        Supplier_name
+),
+Inspections_by_Supplier AS (
+    SELECT
+        Supplier_name,
+        COUNT(*) AS Failed_inspections,
+        SUM(Defect_rates) AS Sum_Rates
+    FROM 
+        supply_chain_data
+    WHERE 
+        Inspection_results LIKE 'Fail'
+    GROUP BY 
+        Supplier_name
+)
+SELECT
+    i.Supplier_name,
+	p.NumOfProds AS Products,
+    i.Failed_inspections AS Failed_inspections,
+    (i.Failed_inspections * 100.0 / p.NumOfProds) AS Percentage_Failures,
+    i.Sum_rates AS Total_Defect_Rates
+FROM 
+    Products_by_Supplier p
+JOIN 
+    Inspections_by_Supplier i
+ON 
+    p.Supplier_name = i.Supplier_name
+ORDER BY Percentage_Failures DESC;
+
+
+~~~
+
+| **Supplier_name** | **Products** | **Failed_inspections** | **Percentage_Failures** | **Total_Defect_Rates** |
+|-------------------|--------------|------------------------|-------------------------|------------------------|
+|Supplier 4         | 	18	   |          12	    |       66.666666666666   |	      31,401392621     |
+|Supplier 5	    |   18	   |           7	    |       38.888888888888   |       25,825206003     |
+|Supplier 2         |	22         |           8	    |       36.363636363636   |       21,551460071     |
+|Supplier 1	    |   27	   |           6	    |       22.222222222222   |       5,443043821      |
+|Supplier 3	    |   15	   |           3	    |       20.000000000000   |       8,273774707      |
+
+
+~~~ SQL
+
+
+
+
+--Manufacturing Costs by Supplier
+
+SELECT
+	Supplier_name,
+	ROUND(SUM(Manufacturing_costs),2) AS ManufacturingCosts
+FROM
+	supply_chain_data
+GROUP BY 
+	Supplier_name
+
+~~~
+
+|Supplier_name | **ManufacturingCosts** |
+|--------------|------------------------|
+|Supplier 1    |	1221,86         |
+|Supplier 2    |        915,7           |
+|Supplier 3    |        654,51          |
+|Supplier 4    |        1128,78         |
+|Supplier 5    |        805,83          |

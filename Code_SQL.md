@@ -218,7 +218,6 @@ FROM
 ~~~SQL
 
 
-
 -- Cost Analysis 
 
 --- Top 10 products with highest manufactuiring costs
@@ -251,3 +250,88 @@ ORDER BY
 
 
 
+
+
+
+~~~ SQL
+
+-- Inspection results and avg defect rates.
+
+SELECT 
+	Inspection_results,
+	COUNT(SKU)*100/(SELECT COUNT(SKU) FROM supply_chain_data) AS '%_products',
+	AVG(Defect_rates) as Average_Defect_Rates
+FROM 
+	supply_chain_data
+GROUP BY 
+	Inspection_results
+
+
+
+~~~
+
+
+| **Inspection_results** | **%_products** | **Average_Defect_Rates** |
+|------------------------|----------------|--------------------------|
+|Fail                    |	 36	  |  2,56930214508333        |
+|Pass	                 |       23	  |  2,03904318604348        |
+|Pending	         |       41	  |  2,15421777492683        |
+
+
+
+
+
+
+
+~~~ SQL
+
+
+
+-- Products with defect rates higher than the mean that did not pass inspections.
+
+SELECT
+	SKU,
+	Supplier_name,
+	Inspection_results,
+	Defect_rates
+FROM 
+	supply_chain_data
+WHERE 
+	Inspection_results LIKE 'Fail'
+	AND
+	Defect_rates > (Select AVG(Defect_rates) AS Average
+	FROM supply_chain_data
+	WHERE 
+	Inspection_results LIKE 'Fail')
+ORDER BY 
+	Defect_rates DESC
+
+
+
+
+
+~~~
+
+| **SKU**  | **Supplier_name**	| **Inspection_results** | **Defect_rates** |
+|----------|--------------------|------------------------|------------------|
+|SKU42	   |    Supplier 5      |          Fail  	 | 4,939255289      |
+|SKU65     |	Supplier 5	|          Fail	         | 4,911095955      |
+|SKU50     |	Supplier 2	|          Fail        	 | 4,754800805      |
+|SKU3      |	Supplier 5	|          Fail	         | 4,746648621      |
+|SKU73	   |    Supplier 4	|          Fail	         | 4,620546065      |
+|SKU55	   |    Supplier 2	|          Fail	         | 4,548919659      |
+|SKU61	   |    Supplier 4	|          Fail          | 4,367470538      |
+|SKU93	   |    Supplier 4	|          Fail 	 | 4,165781795      |
+|SKU36	   |    Supplier 2	|          Fail	         | 3,805533379      |
+|SKU87	   |    Supplier 3	|          Fail	         | 3,693737788      |
+|SKU19	   |    Supplier 4	|          Fail	         | 3,646450865      |
+|SKU33	   |    Supplier 5	|          Fail 	 | 3,541046012      |
+|SKU66	   |    Supplier 5	|          Fail	         | 3,448063288      |
+|SKU97	   |    Supplier 4	|          Fail	         | 3,376237835      |
+|SKU4	   |    Supplier 1	|          Fail    	 | 3,145579523      |
+|SKU44	   |    Supplier 2	|          Fail 	 | 2,96262632       |
+|SKU27	   |    Supplier 5	|          Fail 	 | 2,864667838      |
+|SKU60     |	Supplier 4	|          Fail	         | 2,853090617      |
+|SKU80	   |    Supplier 3	|          Fail	         | 2,849662199      |
+|SKU5	   |    Supplier 4	|          Fail          | 2,779193512      |
+|SKU22	   |    Supplier 4	|          Fail 	 | 2,591275473      |

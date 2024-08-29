@@ -1,6 +1,6 @@
 ~~~ SQL
 
---Insights 
+-- Supply Chain Insights 
 
 
 -- Total Revenue
@@ -174,32 +174,6 @@ FROM
 |    89.92           |
 
 
-~~~ SQL
-
-
-
-
--- Coorrelation between Revenue generated and profit for each product
-
-WITH Profit_Revenue_CTE AS(
-SELECT 
-	SKU,
-	ROUND(SUM(Revenue_generated),2) AS Revenue,
-	ROUND(SUM((Revenue_generated-(Shipping_costs+Manufacturing_costs+Costs))),2) AS Profit
-FROM 
-	supply_chain_data
-GROUP BY 
-	SKU)
-
---Calculating  the Pearson Correlation Coefficient
-SELECT 
-    (AVG(Revenue * Profit) - AVG(Revenue) * AVG(Profit)) / 
-    (STDEVP(Revenue) * STDEVP(Profit)) AS Correlation_Coefficient
-FROM 
-    Profit_Revenue_CTE;
-
-
-
 
 ~~~SQL
 
@@ -235,7 +209,6 @@ ORDER BY
 |       skincare   |SKU4     |	   92.0651606          |
 
 ~~~ SQL
-
 
 
 
@@ -382,10 +355,63 @@ GROUP BY
 
 ~~~
 
-|Supplier_name | **ManufacturingCosts** |
-|--------------|------------------------|
-|Supplier 1    |	1221,86         |
-|Supplier 2    |        915,7           |
-|Supplier 3    |        654,51          |
-|Supplier 4    |        1128,78         |
-|Supplier 5    |        805,83          |
+| **Supplier_name** | **ManufacturingCosts** |
+|-------------------|------------------------|
+|     Supplier 1    |	     1221,86         |
+|     Supplier 2    |        915,7           |
+|     Supplier 3    |        654,51          |
+|     Supplier 4    |        1128,78         |
+|     Supplier 5    |        805,83          |
+
+
+
+~~~SQL
+
+
+--- Manufacturing costs by product type
+
+SELECT 
+	Product_type,
+	ROUND(SUM(Manufacturing_costs),2) AS Manufacturing_Costs
+FROM 
+	supply_chain_data
+GROUP BY 
+	Product_type
+
+~~~
+
+| **Product_type** | **ManufacturingCosts** |
+|------------------|------------------------|
+|    cosmetics     |	    1119,37         |
+|    haircare      |        1647,57         |
+|    skincare      |        1959,73         |
+
+
+
+
+
+
+~~~ SQL
+
+
+--- Total Shipping costs by transportation mode
+
+SELECT 
+	Transportation_modes,
+	ROUND(SUM(Shipping_costs),2) AS Shipping_Costs
+FROM 
+	supply_chain_data
+GROUP BY 
+	Transportation_modes
+
+
+~~~
+
+
+
+| **Transportation_modes** | **Shipping_Costs** |
+|--------------------------|--------------------|
+|Air	                   |      156,46        |
+|Rail	                   |      153,13        |
+|Road	                   |      160,72        |
+|Sea	                   |      84,49         |

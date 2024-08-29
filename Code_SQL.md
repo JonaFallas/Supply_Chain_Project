@@ -45,21 +45,15 @@ GROUP BY
 
 -- Revenue grouped by location 
 
-With CTE_revenue_location  
-
-AS ( 
-
-SELECT  
+With CTE_revenue_location  AS
+(SELECT  
 	Location, 
 	ROUND(SUM(Revenue_generated),2,1) as Revenue 
 FROM  
 	supply_chain_data 
-
 GROUP BY 
-	Location 
-) 
+	Location) 
 
-  
 Select 
 	Location, 
 	Revenue, 
@@ -351,7 +345,7 @@ SELECT
 FROM
 	supply_chain_data
 GROUP BY 
-	Supplier_name
+	Supplier_name;
 
 ~~~
 
@@ -376,7 +370,7 @@ SELECT
 FROM 
 	supply_chain_data
 GROUP BY 
-	Product_type
+	Product_type;
 
 ~~~
 
@@ -402,12 +396,10 @@ SELECT
 FROM 
 	supply_chain_data
 GROUP BY 
-	Transportation_modes
+	Transportation_modes;
 
 
 ~~~
-
-
 
 | **Transportation_modes** | **Shipping_Costs** |
 |--------------------------|--------------------|

@@ -19,9 +19,9 @@ With a dataset of different products sold by a fashion and beauty startup, this 
 
 
 
-# DATA 
+### DATA 
 
-Dataset from Kaggle: Supply Chain Analysis (kaggle.com) 
+### Dataset from Kaggle: Supply Chain Analysis (kaggle.com) 
 
 
 Product Type: The type of product  (haircare, skincare, cosmetics.) 

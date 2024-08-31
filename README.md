@@ -16,10 +16,7 @@ With a dataset of different products sold by a fashion and beauty startup, this 
 - How different routes also affect total costs. 
 
  
-
-
-
-### DATA 
+ 
 
 ### Dataset from Kaggle: Supply Chain Analysis (kaggle.com) 
 
